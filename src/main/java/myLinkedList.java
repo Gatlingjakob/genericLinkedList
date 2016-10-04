@@ -26,6 +26,7 @@ public class myLinkedList<E> implements Iterable<E> {
         return size( ) == 0;
     }
 
+
     public boolean add( E x ) {
         add( size( ), x );
         return true;
