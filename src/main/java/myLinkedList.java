@@ -6,110 +6,117 @@ import java.util.*;
 
 public class myLinkedList<E> implements Iterable<E> {
 
-    public myLinkedList( ) {
-        clear( );
+
+    public myLinkedList() {
+        clear();
     }
 
-    public void clear( ) {
-        beginMarker = new Node<E>( null, null, null );
-        endMarker = new Node<E>( null, beginMarker, null );
+    // O(1) //
+    public void clear() {
+        beginMarker = new Node<E>(null, null, null);
+        endMarker = new Node<E>(null, beginMarker, null);
         beginMarker.next = endMarker;
 
         theSize = 0;
     }
 
-    public int size( ) {
+    // O(n) //
+    public int size() {
         return theSize;
     }
 
-    public boolean isEmpty( ) {
-        return size( ) == 0;
+    // O(n) //
+    public boolean isEmpty() {
+        return size() == 0;
     }
 
-
-    public boolean add( E x ) {
-        add( size( ), x );
+    // O(n) //
+    public boolean add(E x) {
+        add(size(), x);
         return true;
     }
 
-
-    public void add( int idx, E x ) {
-        addBefore( getNode( idx, 0, size( ) ), x );
+    // O(n) //
+    public void add(int idx, E x) {
+        addBefore(getNode(idx, 0, size()), x);
     }
 
-    private void addBefore( Node<E> p, E x ) {
-        Node<E> newNode = new Node<E>( x, p.prev, p );
+    // O(n) //
+    private void addBefore(Node<E> p, E x) {
+        Node<E> newNode = new Node<E>(x, p.prev, p);
         newNode.prev.next = newNode;
         p.prev = newNode;
         theSize++;
     }
 
+    // O(n) //
+    public E get(int idx) {
 
-    public E get( int idx ) {
-
-        return getNode( idx ).data;
+        return getNode(idx).data;
     }
 
-
-    public E set( int idx, E newVal ) {
-        Node<E> p = getNode( idx );
+    // O(1) //
+    public E set(int idx, E newVal) {
+        Node<E> p = getNode(idx);
         E oldVal = p.data;
 
         p.data = newVal;
         return oldVal;
     }
 
-    private Node<E> getNode( int idx ) {
-        return getNode( idx, 0, size( ) - 1 );
+    // O(n) //
+    private Node<E> getNode(int idx) {
+        return getNode(idx, 0, size() - 1);
     }
 
-
-    private Node<E> getNode( int idx, int lower, int upper ) {
+    // O(n) //
+    private Node<E> getNode(int idx, int lower, int upper) {
         Node<E> p;
 
         if (idx < lower || idx > upper){
             throw new IndexOutOfBoundsException("getNode index: " + idx + "; size: " + size());
     }
 
-        if( idx < size( ) / 2 ) {
+        if(idx < size() / 2) {
             p = beginMarker.next;
-            for( int i = 0; i < idx; i++ ) {
+            for (int i = 0; i < idx; i++) {
                 p = p.next;
             }
         }
         else {
             p = endMarker;
-            for( int i = size( ); i > idx; i-- )
+            for(int i = size( ); i > idx; i--)
                 p = p.prev;
         }
 
         return p;
     }
-
-    public E remove( int idx ) {
-        return remove( getNode( idx ) );
+    // O(1) //
+    public E remove(int idx) {
+        return remove(getNode(idx));
     }
-
-    private E remove( Node<E> p ) {
+    // O(1) //
+    private E remove(Node<E> p) {
         p.next.prev = p.prev;
         p.prev.next = p.next;
         theSize--;
 
         return p.data;
     }
+    // O(n) //
+    public String toString() {
+        StringBuilder builder = new StringBuilder("[ ");
 
-    public String toString( ) {
-        StringBuilder sb = new StringBuilder( "[ " );
+        for(E x : this)
+            builder.append(x + " ");
+        builder.append("]");
 
-        for( E x : this )
-            sb.append( x + " " );
-        sb.append( "]" );
-
-        return new String( sb );
+        return new String(builder);
     }
 
-    public java.util.Iterator<E> iterator( ) {
-        return new LinkedListIterator( );
+    // O(n) //
+    public java.util.Iterator<E> iterator() {
+        return new LinkedListIterator();
     }
 
     private class LinkedListIterator implements java.util.Iterator<E> {
@@ -117,12 +124,14 @@ public class myLinkedList<E> implements Iterable<E> {
         private Node<E> current = beginMarker.next;
         private boolean okToRemove = false;
 
-        public boolean hasNext( ) {
+        // O(n) //
+        public boolean hasNext() {
             return current != endMarker;
         }
 
-        public E next( ) {
-            if( !hasNext( ) ) {
+        // O(n) //
+        public E next() {
+            if(!hasNext()) {
                 throw new java.util.NoSuchElementException();
             }
 
@@ -132,11 +141,12 @@ public class myLinkedList<E> implements Iterable<E> {
             return nextItem;
         }
 
-        public void remove( ) {
-            if( !okToRemove ) {
+        // O(1) //
+        public void remove() {
+            if(!okToRemove) {
                 throw new IllegalStateException();
             }
-            myLinkedList.this.remove( current.prev );
+            myLinkedList.this.remove(current.prev);
             okToRemove = false;
         }
     }
